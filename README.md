@@ -49,11 +49,11 @@ There are two kinds of fraudulent submissions being detected by the program: sho
 
 Unstarted jobs are exactly as they sound - jobs where a job completion event/invoice ID are created, but there is no prior log of the event having been started. For example, take the following event log: 
 
-Kelly;START
-Theo;START
-Theo;10 
-Kelly;12 
-Danny; 20
+Kelly;START  
+Theo;START  
+Theo;10  
+Kelly;12  
+Danny; 20  
 
 In the above case, Danny could not have submitted an invoice ID if he never submitted a job start notice. In this situation, the program would return the following:
 
@@ -63,10 +63,10 @@ In the above case, Danny could not have submitted an invoice ID if he never subm
 
 Shortened jobs are job start events which, given their later submitted invoice ID, must have been submitted artificially late. These are identified as jobs with an invoice ID smaller than any invoice ID submitted before their start. For example, take the following event log: 
 
-Nick;START 
-Nick;24 
-Dan;START 
-Dan;18 
+Nick;START  
+Nick;24  
+Dan;START  
+Dan;18  
 
 Since the invoice ID of Nick is 24, while the invoice ID of Dan is 18, this indicates that Dan's job was actually started before Nick's. Therefore, Dan's start event on the third line is classified as a shortened job, and the program would return the following: 
 
@@ -76,11 +76,11 @@ Since the invoice ID of Nick is 24, while the invoice ID of Dan is 18, this indi
 
 Suspicious batches are batch job completions which, given their invoice IDs and their associated start events, must contain at least one shortened job. For example, consider the following event log: 
 
-Leah;START 
-Leah;10 
-Alice;START 
-Alice;START 
-Alice;8,14 
+Leah;START  
+Leah;10  
+Alice;START  
+Alice;START  
+Alice;8,14  
 
 According to the work log, first Leah started and finished helping a student with an invoice ID of 10. Then, Alice starts 2 jobs, gets invoice IDs 8 and 14 for the two jobs, and submits a batch job completion with those invoice IDs. However, since Alice's ID of 8 is lower than Leah's ID of 10, then this means one of her jobs must have started before Leah's job. Therefore, Alice's batch job completion on the fifth line is a suspicious batch, because at least one of the start events should have been submitted before Leah's job completion. Since only one is flagged as a shortened job, we are unable to identify which of the jobs was shortened, so neither can be flagged as a shortened job, and they must be flagged as a suspicious batch instead. If both of Alice's IDs were below 10, then both jobs would be flagged as shortened jobs, rather than as a suspicious batch. Due to this, the event log above would return the following: 
 
